@@ -4,6 +4,10 @@
         exit();
     }
     else {
+        $path = '/var/www';
+        $fileName = date('m-d-Y').'.txt'; // Date format is month-day-year
+        $txtContent = '';
+
         $username = "lab_retail@outstudio.co";
         $password = "un1corN*2021";
         $mailbox = '{mail.outstudio.co:993/ssl/novalidate-cert}';
@@ -43,10 +47,16 @@
                 // echo $overview[0]->subject; 
                 //echo $overview[0]->subject;
                 // echo $partialMessage;
-                echo 'Fecha: ' . $date . ' -  Valor: ' . $int . PHP_EOL;
-                
+                // echo 'Fecha: ' . $date . ' -  Valor: ' . $int . PHP_EOL;
+                $txtContent .=  $date . ' -  Valor: ' . $int . PHP_EOL;
             } // End foreach
-            echo 'Total sumado: ' . $total;
+
+            // echo 'Total sumado: ' . $total . PHP_EOL;
+            $txtContent .= 'Total sumado: ' . $total . PHP_EOL;
+            // using the FILE_APPEND flag to append the content to the end of the file
+            // and the LOCK_EX flag to prevent anyone else writing to the file at the same time
+            $myfile = file_put_contents($fileName, $txtContent.PHP_EOL , FILE_APPEND | LOCK_EX);
+
         } // end if
     } // end else
         
