@@ -4,9 +4,11 @@
         exit();
     }
     else {
-        $path = '/var/www';
-        $fileName = date('m-d-Y').'.txt'; // Date format is month-day-year
+        $path = '/var/www/docs/json/';
+        $fileName = $path . date('m-d-Y').'.json'; // Date format is month-day-year
         $txtContent = '';
+        $jsonContent = '';
+        $jsonObject = array();
 
         $username = "lab_retail@outstudio.co";
         $password = "un1corN*2021";
@@ -27,7 +29,8 @@
         if (! empty($emailData)) {
             
             $total = 0;
-            
+            $jsonContent .= '{ "dates": [';
+
             foreach ($emailData as $emailIdent) {
                 // imap_fetch_body
                 // ()Root Message Part (multipart/related)
@@ -43,19 +46,29 @@
                 $int = (int) filter_var($emailContent, FILTER_SANITIZE_NUMBER_INT);
                 $total += $int;
 
+                array_push($jsonObject, array(
+                    "date" => $date,
+                    "value" => $int
+                    )
+                );
+                // ["date"] = $date;
+                // $jsonObject["int"] = $int;
                 // echo $overview[0]->from; 
                 // echo $overview[0]->subject; 
                 //echo $overview[0]->subject;
                 // echo $partialMessage;
                 // echo 'Fecha: ' . $date . ' -  Valor: ' . $int . PHP_EOL;
                 $txtContent .=  $date . ' -  Valor: ' . $int . PHP_EOL;
+                // $jsonContent .= '{ "date" : "' . $date .'", "value" : "' . $int .'"},';
             } // End foreach
 
+            echo json_encode($jsonObject).PHP_EOL;
+            // $jsonContent .= ']}';
             // echo 'Total sumado: ' . $total . PHP_EOL;
             $txtContent .= 'Total sumado: ' . $total . PHP_EOL;
             // using the FILE_APPEND flag to append the content to the end of the file
             // and the LOCK_EX flag to prevent anyone else writing to the file at the same time
-            $myfile = file_put_contents($fileName, $txtContent.PHP_EOL , FILE_APPEND | LOCK_EX);
+            $myfile = file_put_contents($fileName, $jsonContent.PHP_EOL , FILE_APPEND | LOCK_EX);
 
         } // end if
     } // end else
