@@ -1,0 +1,4 @@
+cd /Users/julio.delvalle/projects/lab-retail.github.io/docs/json/
+git add data.json
+git commit -m "Adding data.json file" data.json
+git push origin master
