@@ -11,6 +11,19 @@ function readTextFile(file, callback) {
 }
 
 readTextFile("./json/data.json", function(text){
-    var data = JSON.parse(text);
-    console.log(data);
+    let data = JSON.parse(text)
+        htmlString = '';
+
+    const total = document.getElementById('total');
+    const datesList = document.getElementById('dates');
+    
+    total.innerHTML = "Total: " + data.total;
+
+    for (let x in data.dates) {
+        htmlString += '<li>'
+        htmlString += 'Date: ' + data.dates[x].date;
+        htmlString += '<br />Value: ' + data.dates[x].value;
+        htmlString += '</li>';
+    }
+    datesList.innerHTML = htmlString;
 });
