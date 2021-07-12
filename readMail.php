@@ -1,6 +1,6 @@
 <?php
     if (! function_exists('imap_open')) {
-        echo "IMAP is not configured.";
+        echo "IMAP is not configured.".PHP_EOL;
         exit();
     }
     else {
@@ -29,7 +29,7 @@
         if (! empty($emailData)) {
             
             $total = 0;
-            $jsonContent .= '{ "dates": [';
+            $jsonContent .= '{ "dates":';
 
             foreach ($emailData as $emailIdent) {
                 // imap_fetch_body
@@ -62,7 +62,8 @@
                 // $jsonContent .= '{ "date" : "' . $date .'", "value" : "' . $int .'"},';
             } // End foreach
 
-            echo json_encode($jsonObject).PHP_EOL;
+            $jsonContent .= json_encode($jsonObject).PHP_EOL;
+            $jsonContent .= '}';
             // $jsonContent .= ']}';
             // echo 'Total sumado: ' . $total . PHP_EOL;
             $txtContent .= 'Total sumado: ' . $total . PHP_EOL;
