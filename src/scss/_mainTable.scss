@@ -1,0 +1,22 @@
+#mainTable {
+    display: grid;
+    padding: 3vw 0;
+    margin-bottom: 2vw;
+    grid-template-columns: 1fr 1fr;
+    border-top: dashed 0.7vw $borderColor;
+    border-bottom: dashed 0.7vw $borderColor;
+    margin-bottom: 3vw;
+
+    .item {
+        margin-bottom: 2vw;
+        text-align: center;
+        font-size: 3.2vw;
+        // border: solid 1px $borderColor;
+        text-transform: uppercase;
+    }
+
+    .columnHeader {
+        font-size: 4vw;
+    }
+}
+

@@ -1,181 +1,190 @@
-function readTextFile(file, callback) {
-    var rawFile = new XMLHttpRequest();
-    rawFile.overrideMimeType("application/json");
-    rawFile.open("GET", file, true);
-    rawFile.onreadystatechange = function() {
-        if (rawFile.readyState === 4 && rawFile.status == "200") {
-            callback(rawFile.responseText);
-        }
-    }
-    rawFile.send(null);
-}
+// dataset contains JSON Content from PHP readMail function
+// dataset can be used throughout all functions.
+// console.log(dataset);
 
-let jsonData;
+// values and colors Arrays will be used by D3 graphs
+let valuesArray = [];
+let colorsArray = ["#53a1aa", "#c6e4e4", "#dbdcc3", "#d66747", "#782e1f"];
+// let colorsArray = ["#53a1aa", "#76AFB7", "#c6e4e4", "#dbdcc3", "#d66747", "#782e1f"];
 
-readTextFile("./json/data.json", function(text){
-    let data = JSON.parse(text)
-        htmlString = '',
-        total = 0;
+let showMainTable = () => {
+    let htmlString = '',
+    total = 0;
     
-    drawGraph(data);
-
     const totalEl = document.getElementById('total');
-    const datesList = document.getElementById('dates');
+    const mainTable = document.getElementById('mainTable');
     
-    for (let x in data) {
-        htmlString += '<li>'
-        htmlString += 'Date: ' + data[x].date;
-        htmlString += ' - Value: ' + data[x].value;
-        htmlString += '</li>';
-        total += parseInt(data[x].value);
-    }
-
-    totalEl.innerHTML = "Total: " + total;
-    datesList.innerHTML = htmlString;
-});
-
-
-
-// const data = [
-// 	{
-// 		"date": "26 June, 2021, 22:37:16",
-// 		"value": 2
-// 	}, {
-// 		"date": "26 June, 2021, 22:37:39",
-// 		"value": 3
-// 	}, {
-// 		"date": "04 July, 2021, 22:14:02",
-// 		"value": 6
-// 	}, {
-// 		"date": "08 July, 2021, 00:10:49",
-// 		"value": 7
-// 	}
-// ]
-let drawGraph = (jsonData) => {
-    const width = 1400;
-    const height = 450;
-    const margin = { top: 50, bottom: 50, left: 50, right: 50 };
-    
-    const svg = d3.select('body')
-      .append('svg')
-      .attr('width', width - margin.left - margin.right)
-      .attr('height', height - margin.top - margin.bottom)
-      .attr("viewBox", [0, 0, width, height]);
-    
-    const x = d3.scaleBand()
-      .domain(d3.range(jsonData.length))
-      .range([margin.left, width - margin.right])
-      .padding(0.1)
-    
-    const y = d3.scaleLinear()
-      .domain([0, 10])
-      .range([height - margin.bottom, margin.top])
-    
-    svg
-      .append("g")
-      .attr("fill", 'royalblue')
-      .selectAll("rect")
-      .data(jsonData.sort((a, b) => d3.descending(a.value, b.value)))
-      .join("rect")
-        .attr("x", (d, i) => x(i))
-        .attr("y", d => y(d.value))
-        .attr('title', (d) => d.value)
-        .attr("class", "rect")
-        .attr("height", d => y(0) - y(d.value))
-        .attr("width", x.bandwidth());
-    
-    function yAxis(g) {
-      g.attr("transform", `translate(${margin.left}, 0)`)
-        .call(d3.axisLeft(y).ticks(null, jsonData.format))
-        .attr("font-size", '20px')
+    for (let x in dataset.dates) {
+        htmlString += '<div class="item">'
+        htmlString += dataset.dates[x].date;
+        htmlString += '</div>';
+        htmlString += '<div class="item">'
+        htmlString += dataset.dates[x].value;
+        htmlString += '</div>';
+        total += parseInt(dataset.dates[x].value);
+        valuesArray.push(dataset.dates[x].value);
     }
     
-    function xAxis(g) {
-      g.attr("transform", `translate(0,${height - margin.bottom})`)
-        .call(d3.axisBottom(x).tickFormat(i => jsonData[i].date))
-        .attr("font-size", '20px')
-    }
-    
-    svg.append("g").call(xAxis);
-    svg.append("g").call(yAxis);
-    svg.node();
+    totalEl.innerHTML = total;
+    mainTable.innerHTML += htmlString;
 }
-  
 
-
-
-
-// d3.json("./json/data.json", function(data) {
-//     let canvas = d3.select('body').append('svg').attr("width", 500).attr('height', 400);
-//     canvas.selectAll('rect').data(data).enter()
-//         .append('rect')
-//         .attr('width', function(d) { return d.value * 40; })
-//         .attr('height', 35)
-//         .attr('y', function(d, i) { i * 5; })
-//         .attr('fill', 'blue');
-
-//     canvas.selectAll('text').data(data).enter()
-//         .append('text')
-//         .attr('fill', 'white')
-//         .attr('y', function(d, i) { return i * 50 + 24; })
-//         .text(function(d) { return d.date; })
-// });
-
-
-/*
-function drawHistogram(data){
+/**
+ * Data for the Donut Chart comes on the valuesArray
+ */
+let showDonutChart = () => {
     // set the dimensions and margins of the graph
-    var margin = {top: 10, right: 30, bottom: 30, left: 40},
-        width = 460 - margin.left - margin.right,
-        height = 400 - margin.top - margin.bottom;
+    const width = (window.innerWidth > 0) ? window.innerWidth : screen.width,
+    // let width = 450
+        height = 450,
+        margin = 40;
 
-    // append the svg object to the body of the page
-    var svg = d3.select("#dataVizContainer")
-    .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-        .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
+    // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
+    const radius = Math.min(width, height) / 2 - margin
 
-    // get the data
-    // d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/1_OneNum.csv", function(data) {
-    // d3.json("./json/data.json", function(data) {
-        // X axis: scale and draw:
-        var x = d3.scaleLinear()
-            .domain([0, 1000])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
-            .range([0, width]);
-        svg.append("g")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x));
+    // append the svg object to the div called 'my_dataviz'
+    const svg = d3.select("#donutChart")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-        // set the parameters for the histogram
-        var histogram = d3.histogram()
-            .value(function(d) { return d.price; })   // I need to give the vector of value
-            .domain(x.domain())  // then the domain of the graphic
-            .thresholds(x.ticks(70)); // then the numbers of bins
+    // set the color scale
+    const color = d3.scaleOrdinal()
+    .domain(valuesArray)
+    // .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56"])
+    .range(colorsArray)
 
-        // And apply this function to data to get the bins
-        var bins = histogram(data);
+    // Compute the position of each group on the pie:
+    const pie = d3.pie().value(function(d) {return d.value; })
+    const data_ready = pie(d3.entries(valuesArray))
 
-        // Y axis: scale and draw:
-        var y = d3.scaleLinear()
-            .range([height, 0]);
-            y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
-        svg.append("g")
-            .call(d3.axisLeft(y));
+    // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+    svg
+        .selectAll('whatever')
+        .data(data_ready)
+        .enter()
+        .append('path')
+        .attr('d', d3.arc()
+            .innerRadius(100)// This is the size of the donut hole
+            .outerRadius(radius)
+        )
+        .attr('fill', function(d){ return(color(d.data.key)) })
+        .attr("stroke", "black")
+        .style("stroke-width", "2px")
+        .style("opacity", 0.7)
+}
 
-        // append the bar rectangles to the svg element
-        svg.selectAll("rect")
-            .data(bins)
+let showDonutChartWithText = () => {
+    // let dataArray = [
+    //     { name: 'IE', percent: 39.10 },
+    //     { name: 'Chrome', percent: 32.51 },
+    //     { name: 'Safari', percent: 13.68 },
+    //     { name: 'Firefox', percent: 8.71 },
+    //     { name: 'Others', percent: 6.01 }
+    // ];
+    let dataArray = dataset.dates;
+
+    let pie=d3.pie()
+            .value(function(d){return d.value})
+            .sort(null)
+            .padAngle(.03);
+
+    let w=300,h=300;
+
+    let outerRadius=w/2;
+    let innerRadius=100;
+
+    let color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    let arc=d3.arc()
+            .outerRadius(outerRadius)
+            .innerRadius(innerRadius);
+
+    let svg=d3.select("#chart")
+            .append("svg")
+            .attr("width",w)
+            .attr("height",h)
+            .attr("class", "shadow")
+            .append('g')
+            .attr("transform",'translate('+w/2+','+h/2+')');
+    let path=svg.selectAll('path')
+            .data(pie(dataArray))
             .enter()
-            .append("rect")
-                .attr("x", 1)
-                .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
-                .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
-                .attr("height", function(d) { return height - y(d.length); })
-                .style("fill", "#69b3a2")
+            .append('path')
+            .attr("d",arc)
+            .attr("fill",function(d,i){return color(d.data.date);});
+            // .attr("fill",function(d,i){return color(d.data.name);});
 
-    // }
-    // );
-}*/
+    path.transition()
+            .duration(1000)
+            .attrTween('d', function(d) {
+                var interpolate = d3.interpolate({startAngle: 0, endAngle: 0}, d);
+                return function(t) {
+                    return arc(interpolate(t));
+                };
+            });
+
+    let restOfTheData=function(){
+        let text=svg.selectAll('text')
+                .data(pie(dataArray))
+                .enter()
+                .append("text")
+                .transition()
+                .duration(200)
+                .attr("transform", function (d) {
+                    return "translate(" + arc.centroid(d) + ")";
+                })
+                .attr("dy", ".4em")
+                .attr("text-anchor", "middle")
+                .text(function(d){
+                    // return d.data.value+"%";
+                    return d.data.value;
+                })
+                .style('fill','#fff')
+                .style('font-size','4vw');
+
+        // let legendRectSize=20;
+        // let legendSpacing=7;
+        // let legendHeight=legendRectSize+legendSpacing;
+
+        // let legend=svg.selectAll('.legend')
+        //         .data(color.domain())
+        //         .enter()
+        //         .append('g')
+        //         .attr('class','legend')
+        //         .attr('transform',
+        //             function(d,i){
+        //                 //Just a calculation for x & y position
+        //                 return 'translate(-35,' + ((i*legendHeight)-65) + ')';
+        //             });
+        // // console.log('color :' + color.domain());
+        // legend.append('rect')
+        //         .attr('width',legendRectSize)
+        //         .attr('height',legendRectSize)
+        //         .attr('rx',20,)
+        //         .attr('ry',20)
+        //         .style({
+        //             fill:color,
+        //             stroke:color
+        //         });
+
+        // legend.append('text')
+        //         .attr('x',30)
+        //         .attr('y',15)
+        //         .text(function(d){
+        //             return d;
+        //         }).style({
+        //             fill:'#929DAF',
+        //             'font-size':'14px'
+        //         });
+    };
+
+    setTimeout(restOfTheData,1000);
+}
+
+// init all functions
+showMainTable();
+// showDonutChart();
+showDonutChartWithText();

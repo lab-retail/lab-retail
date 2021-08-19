@@ -1,0 +1,28 @@
+/* GENERAL STYLES
+-------------------------------------------------- */
+body{
+    margin:0;
+    color: $oblivionGreen;
+    font-family: $raleway-googole-font;
+    background-color: #0a0a0a;
+}
+
+h1,
+h2 {
+    margin: 3vw 0;
+    text-align: center;
+    letter-spacing: 0.4vw;
+    font-family: $banger-google-font;
+}
+
+h1 {
+    font-size: 7vw;
+}
+
+section {
+    margin-bottom: 5vw;
+}
+
+.subTitle {
+    font-size: 6vw;
+}
