@@ -1,5 +1,5 @@
 <?php
-    require_once('../includes/data.php');
+    require_once('./data.php');
     
     class mailReader {
 
@@ -9,8 +9,6 @@
                 exit();
             }
             else {
-                $path       = '/var/www/docs/json/';
-                $fileName   = $path . date('m-d-Y').'.json'; // Date format is month-day-year
                 $txtContent = '';
                 $jsonContent= '';
                 $jsonObject = array();
@@ -67,9 +65,6 @@
                     // $jsonContent .= ']}';
                     // echo 'Total sumado: ' . $total . PHP_EOL;
                     $txtContent .= 'Total sumado: ' . $total . PHP_EOL;
-                    // using the FILE_APPEND flag to append the content to the end of the file
-                    // and the LOCK_EX flag to prevent anyone else writing to the file at the same time
-                    $myfile = file_put_contents($fileName, $jsonContent.PHP_EOL , FILE_APPEND | LOCK_EX);
         
                 } // end if
             } // end else
