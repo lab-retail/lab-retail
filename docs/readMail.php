@@ -18,9 +18,6 @@
                 $username   = USER;
                 $password   = PASS;
                 $mailbox    = MAILBOX;
-                // $username = "lab_retail@outstudio.co";
-                // $password = "un1corN*2021";
-                // $mailbox = '{mail.outstudio.co:993/ssl/novalidate-cert}';
         
                 $connection = imap_open($mailbox, $username, $password) or die('Cannot connect to Mailbox: ' . imap_last_error());
         
@@ -59,13 +56,7 @@
                             "value" => $int
                             )
                         );
-                        // ["date"] = $date;
-                        // $jsonObject["int"] = $int;
-                        // echo $overview[0]->from; 
-                        // echo $overview[0]->subject; 
-                        //echo $overview[0]->subject;
-                        // echo $partialMessage;
-                        // echo 'Fecha: ' . $date . ' -  Valor: ' . $int . PHP_EOL;
+
                         $txtContent .=  $date . ' -  Valor: ' . $int . PHP_EOL;
                         // $jsonContent .= '{ "date" : "' . $date .'", "value" : "' . $int .'"},';
                     } // End foreach
@@ -84,10 +75,6 @@
             } // end else
                 
             imap_close($connection);
-        }
-
-        public function hola($name){
-            echo "hola " . $name;
         }
     }
 ?>

@@ -24,16 +24,13 @@
             <div id="chart" class="chartContainer"></div>
         </section>
    
-
         <?php
-            header("Access-Control-Allow-Origin: *");
             require_once('readMail.php');
             $currentData = new mailReader();
-
         ?>
 
         <script src="./js/d3.v5.min.js"></script>
-        <script>let dataset = <?php $currentData->readMail(); ?>; console.log(dataset);</script>
+        <script>let dataset = <?php $currentData->readMail(); ?>;</script>
         <script src="./js/main.js"></script>
     </body>
 </html>
