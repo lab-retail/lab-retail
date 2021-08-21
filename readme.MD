@@ -6,12 +6,13 @@ Una vez que el ambiente local esté listo, usar el comando php en una terminal:
 
 ## Pasos para settear ambiente local en Ubuntu:
 
-1. En una terminal, instalar php5-imap ```sudo apt-get install php5-imap```
-Podría variar según la versión de php.
+0. Verificar qué versión de PHP usa Ubuntu -> checkear phpinfo() 
+Si por ejemplo el sistema usa la versión 7.0.4, se deben ajustar los comandos a pnp 7.0
 
-2. ```sudo php5enmod imap```
-
-3. Reiniciar apache para que los cambios tengan efecto ```sudo service apache2 restart```
+1. En una terminal, instalar php imap (varía según la versión de PHP)
+```sudo apt install php7.0-imap```
+```sudo phpenmod imap```
+```sudo service apache2 restart```
 
 
 ## Pasos para settear ambiente local en Mac OSX
