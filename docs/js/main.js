@@ -1,6 +1,29 @@
-// dataset contains JSON Content from PHP readMail function
-// dataset can be used throughout all functions.
-// console.log(dataset);
+/**
+ * dataset contains JSON Content from PHP readMail function
+ * dataset can be used throughout all functions
+ * dataset content format
+ * {
+ *      dates: 
+ *          [
+ *              {
+ *                  date: DDMMYY, 
+ *                  [
+ *                       { id: X, value: Y },
+ *                       { id: X, value: Y }
+ *                  ],
+ *              }, 
+ *              {
+ *                  date: DDMMYY, 
+ *                  [
+ *                      { id: X, value: Y },
+ *                      { id: X, value: Y }
+ *                  ],
+ *              }    
+ *          ]
+ * }
+ */
+ 
+console.log(dataset);
 
 // values and colors Arrays will be used by D3 graphs
 let valuesArray = [];
@@ -14,9 +37,10 @@ let showMainTable = () => {
     const totalEl = document.getElementById('total');
     const mainTable = document.getElementById('mainTable');
     
-    for (let x in dataset.dates) {
+    for (let x in dataset) {
         htmlString += '<div class="item">'
-        htmlString += dataset.dates[x].date;
+        htmlString += dataset[x].date;
+        // htmlString += dataset.dates[x].id;
         htmlString += '</div>';
         htmlString += '<div class="item">'
         htmlString += dataset.dates[x].value;
@@ -77,13 +101,7 @@ let showDonutChart = () => {
 }
 
 let showDonutChartWithText = () => {
-    // let dataArray = [
-    //     { name: 'IE', percent: 39.10 },
-    //     { name: 'Chrome', percent: 32.51 },
-    //     { name: 'Safari', percent: 13.68 },
-    //     { name: 'Firefox', percent: 8.71 },
-    //     { name: 'Others', percent: 6.01 }
-    // ];
+
     let dataArray = dataset.dates;
 
     let pie=d3.pie()
@@ -187,4 +205,4 @@ let showDonutChartWithText = () => {
 // init all functions
 showMainTable();
 // showDonutChart();
-showDonutChartWithText();
+// showDonutChartWithText();

@@ -1,4 +1,5 @@
 <?php
+    // mensaje Setiembre 2021     I1T###X###Y###N#H##P##
     require_once('./data.php');
     
     class mailReader {
@@ -9,7 +10,6 @@
                 exit();
             }
             else {
-                $txtContent = '';
                 $jsonContent= '';
                 $jsonObject = array();
         
@@ -25,51 +25,60 @@
                 /* Get all e-mails */
                 // imap_search https://www.php.net/manual/en/function.imap-search.php
                 $emailData = imap_search($connection, 'ALL');
-                // $emailData = imap_search($connection, 'NEW');
+                // $emailData = imap_search($connection, 'UNSEEN');
                 // $emailData = imap_search($connection, 'SUBJECT "Airbnb"');
         
         
                 if (! empty($emailData)) {
-                    
-                    $total = 0;
-                    $jsonContent .= '{ "dates":';
+                    // $jsonContent .= '{ "dates":';
         
                     foreach ($emailData as $emailIdent) {
-                        // imap_fetch_body
-                        // ()Root Message Part (multipart/related)
-                        // (1) The text parts of the message (multipart/alternative)
-                        // (1.1) Plain text version (text/plain)
-                        // (1.2) HTML version (text/html)
-                        // (2) The background stationary (image/gif)
                         $overview = imap_fetch_overview($connection, $emailIdent, 0);
                         $message = imap_fetchbody($connection, $emailIdent, '1');
                         $messageExcerpt = substr($message, 0, 150);
                         $date = date('d F, Y, H:i:s', strtotime($overview[0]->date));
-                        $emailContent = quoted_printable_decode($messageExcerpt); 
-                        $int = (int) filter_var($emailContent, FILTER_SANITIZE_NUMBER_INT);
-                        $total += $int;
-        
-                        array_push($jsonObject, array(
-                            "date" => $date,
-                            "value" => $int
-                            )
-                        );
+                        $emailContent = substr(quoted_printable_decode($messageExcerpt), 0, 22); 
 
-                        $txtContent .=  $date . ' -  Valor: ' . $int . PHP_EOL;
-                        // $jsonContent .= '{ "date" : "' . $date .'", "value" : "' . $int .'"},';
+                        $jsonObject = $this->parseEmailContent($emailContent);
                     } // End foreach
         
                     $jsonContent .= json_encode($jsonObject).PHP_EOL;
-                    $jsonContent .= '}';
-                    echo $jsonContent;
-                    // $jsonContent .= ']}';
-                    // echo 'Total sumado: ' . $total . PHP_EOL;
-                    $txtContent .= 'Total sumado: ' . $total . PHP_EOL;
+                    // $jsonContent .= '}'. PHP_EOL;
+                    echo $jsonContent ;
         
                 } // end if
             } // end else
                 
             imap_close($connection);
+        }
+
+        public function parseEmailContent($emailContentString){
+            $emailContentArray = array();
+
+            array_push(
+                $emailContentArray,
+                array(
+                    "id"    => substr($emailContentString, 1, 1),
+                    "todos" => substr($emailContentString, 3, 3),
+                    "prodX" => substr($emailContentString, 7, 3),
+                    "prodY" => substr($emailContentString, 11, 3),
+                    "nivel" => substr($emailContentString, 15, 1),
+                    "mayor" => substr($emailContentString, 17, 2),
+                    "peor" => substr($emailContentString, 20, 2)
+                )
+            );
+            /*
+            I1T###X###Y###N#H##P##
+            pos[0] = i
+            pos[2] = T
+            pos[6] = X
+            pos[10] = Y
+            pos[14] = N
+            pos[16] = H
+            pos[19] = P
+            */
+      
+            return $emailContentArray;
         }
     }
 ?>
