@@ -39,7 +39,7 @@
                         $date = date('d F, Y, H:i:s', strtotime($overview[0]->date));
                         $emailContent = substr(quoted_printable_decode($messageExcerpt), 0, 22); 
 
-                        $jsonObject = $this->parseEmailContent($emailContent);
+                        $jsonObject = $this->parseEmailContent($date, $emailContent);
                     } // End foreach
         
                     $jsonContent .= json_encode($jsonObject).PHP_EOL;
@@ -52,12 +52,13 @@
             imap_close($connection);
         }
 
-        public function parseEmailContent($emailContentString){
+        public function parseEmailContent($dateString, $emailContentString){
             $emailContentArray = array();
 
             array_push(
                 $emailContentArray,
                 array(
+                    "date" => $dateString,
                     "id"    => substr($emailContentString, 1, 1),
                     "todos" => substr($emailContentString, 3, 3),
                     "prodX" => substr($emailContentString, 7, 3),

@@ -13,7 +13,8 @@
 
         <div id="mainTable">
             <div class="columnHeader item">DateTime</div>
-            <div class="columnHeader item">Value</div>
+            <div class="columnHeader item">ProdX</div>
+            <div class="columnHeader item">ProdY</div>
         </div>
 
         <section>

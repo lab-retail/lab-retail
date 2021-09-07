@@ -40,13 +40,15 @@ let showMainTable = () => {
     for (let x in dataset) {
         htmlString += '<div class="item">'
         htmlString += dataset[x].date;
-        // htmlString += dataset.dates[x].id;
         htmlString += '</div>';
         htmlString += '<div class="item">'
-        htmlString += dataset.dates[x].value;
+        htmlString += dataset[x].prodX
         htmlString += '</div>';
-        total += parseInt(dataset.dates[x].value);
-        valuesArray.push(dataset.dates[x].value);
+        htmlString += '<div class="item">'
+        htmlString += dataset[x].prodY
+        htmlString += '</div>';
+        total += parseInt(dataset.todos);
+        // valuesArray.push(dataset.dates[x].value);
     }
     
     totalEl.innerHTML = total;
