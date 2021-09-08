@@ -1,42 +1,19 @@
-/**
- * dataset contains JSON Content from PHP readMail function
- * dataset can be used throughout all functions
- * dataset content format
- * {
- *      dates: 
- *          [
- *              {
- *                  date: DDMMYY, 
- *                  [
- *                       { id: X, value: Y },
- *                       { id: X, value: Y }
- *                  ],
- *              }, 
- *              {
- *                  date: DDMMYY, 
- *                  [
- *                      { id: X, value: Y },
- *                      { id: X, value: Y }
- *                  ],
- *              }    
- *          ]
- * }
- */
- 
 console.log(dataset);
 
 // values and colors Arrays will be used by D3 graphs
-let valuesArray = [];
-let colorsArray = ["#53a1aa", "#c6e4e4", "#dbdcc3", "#d66747", "#782e1f"];
+// let valuesArray = [];
+// let colorsArray = ["#53a1aa", "#c6e4e4", "#dbdcc3", "#d66747", "#782e1f"];
 // let colorsArray = ["#53a1aa", "#76AFB7", "#c6e4e4", "#dbdcc3", "#d66747", "#782e1f"];
 
 let showMainTable = () => {
     let htmlString = '',
     total = 0;
+    nivel = 0;
     
     const totalEl = document.getElementById('total');
     const mainTable = document.getElementById('mainTable');
-    
+    const nivelEl = document.getElementById('nivelMasVisitado');
+
     for (let x in dataset) {
         htmlString += '<div class="item">'
         htmlString += dataset[x].date;
@@ -47,67 +24,32 @@ let showMainTable = () => {
         htmlString += '<div class="item">'
         htmlString += dataset[x].prodY
         htmlString += '</div>';
-        total += parseInt(dataset.todos);
-        // valuesArray.push(dataset.dates[x].value);
+        total += parseInt(dataset[x].todos);
+        nivel = parseInt(dataset[x].nivel);
     }
     
     totalEl.innerHTML = total;
+    nivelEl.innerHTML = nivel;
     mainTable.innerHTML += htmlString;
 }
 
-/**
- * Data for the Donut Chart comes on the valuesArray
- */
-let showDonutChart = () => {
-    // set the dimensions and margins of the graph
-    const width = (window.innerWidth > 0) ? window.innerWidth : screen.width,
-    // let width = 450
-        height = 450,
-        margin = 40;
-
-    // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
-    const radius = Math.min(width, height) / 2 - margin
-
-    // append the svg object to the div called 'my_dataviz'
-    const svg = d3.select("#donutChart")
-        .append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .append("g")
-        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-    // set the color scale
-    const color = d3.scaleOrdinal()
-    .domain(valuesArray)
-    // .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56"])
-    .range(colorsArray)
-
-    // Compute the position of each group on the pie:
-    const pie = d3.pie().value(function(d) {return d.value; })
-    const data_ready = pie(d3.entries(valuesArray))
-
-    // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
-    svg
-        .selectAll('whatever')
-        .data(data_ready)
-        .enter()
-        .append('path')
-        .attr('d', d3.arc()
-            .innerRadius(100)// This is the size of the donut hole
-            .outerRadius(radius)
-        )
-        .attr('fill', function(d){ return(color(d.data.key)) })
-        .attr("stroke", "black")
-        .style("stroke-width", "2px")
-        .style("opacity", 0.7)
-}
 
 let showDonutChartWithText = () => {
-
-    let dataArray = dataset.dates;
+    // let dataArray = dataset;
+    let dataArray = [
+        {
+            "prodX" : dataset[0].prodX
+        },
+        {
+            "prodX" : dataset[0].prodY
+        }
+    ]
 
     let pie=d3.pie()
-            .value(function(d){return d.value})
+            .value(function(d){
+                // return d.value
+                return d.prodX
+            })
             .sort(null)
             .padAngle(.03);
 
@@ -129,13 +71,15 @@ let showDonutChartWithText = () => {
             .attr("class", "shadow")
             .append('g')
             .attr("transform",'translate('+w/2+','+h/2+')');
+
     let path=svg.selectAll('path')
             .data(pie(dataArray))
             .enter()
             .append('path')
             .attr("d",arc)
-            .attr("fill",function(d,i){return color(d.data.date);});
-            // .attr("fill",function(d,i){return color(d.data.name);});
+            .attr("fill",function(d,i){
+                return color(d.data.prodX);
+            });
 
     path.transition()
             .duration(1000)
@@ -160,7 +104,7 @@ let showDonutChartWithText = () => {
                 .attr("text-anchor", "middle")
                 .text(function(d){
                     // return d.data.value+"%";
-                    return d.data.value;
+                    return d.data.prodX;
                 })
                 .style('fill','#fff')
                 .style('font-size','4vw');
@@ -207,4 +151,84 @@ let showDonutChartWithText = () => {
 // init all functions
 showMainTable();
 // showDonutChart();
-// showDonutChartWithText();
+showDonutChartWithText();
+
+
+
+
+/**
+ * Data for the Donut Chart comes on the valuesArray
+ */
+ let showDonutChart = () => {
+    // set the dimensions and margins of the graph
+    const width = (window.innerWidth > 0) ? window.innerWidth : screen.width,
+    // let width = 450
+        height = 450,
+        margin = 40;
+
+    // The radius of the pieplot is half the width or half the height (smallest one). I subtract a bit of margin.
+    const radius = Math.min(width, height) / 2 - margin
+
+    // append the svg object to the div called 'my_dataviz'
+    const svg = d3.select("#donutChart")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+    // set the color scale
+    const color = d3.scaleOrdinal()
+    .domain(valuesArray)
+    // .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56"])
+    .range(colorsArray)
+
+    // Compute the position of each group on the pie:
+    const pie = d3.pie().value(function(d) {return d.value; })
+    const data_ready = pie(d3.entries(valuesArray))
+
+    // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+    svg
+        .selectAll('whatever')
+        .data(data_ready)
+        .enter()
+        .append('path')
+        .attr('d', d3.arc()
+            .innerRadius(100)// This is the size of the donut hole
+            .outerRadius(radius)
+        )
+        .attr('fill', function(d){ return(color(d.data.key)) })
+        .attr("stroke", "black")
+        .style("stroke-width", "2px")
+        .style("opacity", 0.7)
+}
+
+
+
+
+
+
+/**
+ * dataset contains JSON Content from PHP readMail function
+ * dataset can be used throughout all functions
+ * dataset content format
+ * {
+ *      dates: 
+ *          [
+ *              {
+ *                  date: DDMMYY, 
+ *                  [
+ *                       { id: X, value: Y },
+ *                       { id: X, value: Y }
+ *                  ],
+ *              }, 
+ *              {
+ *                  date: DDMMYY, 
+ *                  [
+ *                      { id: X, value: Y },
+ *                      { id: X, value: Y }
+ *                  ],
+ *              }    
+ *          ]
+ * }
+ */
