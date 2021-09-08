@@ -36,5 +36,6 @@
         <script src="./js/d3.v5.min.js"></script>
         <script>let dataset = <?php $currentData->readMail(); ?>;</script>
         <script src="./js/main.js"></script>
+        <script src="./js/barChart.js"></script>
     </body>
 </html>
