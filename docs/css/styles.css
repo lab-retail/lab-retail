@@ -59,6 +59,7 @@ table {
 -------------------------------------------------- */
 body {
   margin: 0;
+  font-size: 3.2vw;
   color: #4fbbc7;
   font-family: "Raleway", sans-serif;
   background-color: #0a0a0a;
@@ -69,11 +70,30 @@ h2 {
   margin: 3vw 0;
   text-align: center;
   letter-spacing: 0.4vw;
-  font-family: "Bangers", sans-serif;
+}
+
+@media (min-width: 1200px) {
+  h1,
+  h2 {
+    margin: 36px 0;
+  }
 }
 
 h1 {
   font-size: 7vw;
+  font-family: "Bangers", sans-serif;
+}
+
+@media (min-width: 1200px) {
+  h1 {
+    font-size: 84px;
+  }
+}
+
+@media (min-width: 1200px) {
+  h2 {
+    font-size: 39px;
+  }
 }
 
 section {
@@ -93,15 +113,35 @@ section {
   margin-bottom: 3vw;
 }
 
+@media (min-width: 1200px) {
+  #mainTable {
+    margin-bottom: 36px;
+    padding: 36px 0;
+    border-top-width: 8.39px;
+    border-bottom-width: 8.39px;
+  }
+}
+
 #mainTable .item {
   margin-bottom: 2vw;
   text-align: center;
-  font-size: 3.2vw;
   text-transform: uppercase;
+}
+
+@media (min-width: 1200px) {
+  #mainTable .item {
+    font-size: 39px;
+  }
 }
 
 #mainTable .columnHeader {
   font-size: 4vw;
+}
+
+@media (min-width: 1200px) {
+  #mainTable .columnHeader {
+    font-size: 48px;
+  }
 }
 
 .chartContainer {
@@ -114,5 +154,9 @@ section {
 
 .legend {
   fill: #FFFFFF;
+}
+
+#pieChart text {
+  font-size: 17px;
 }
 /*# sourceMappingURL=styles.css.map */

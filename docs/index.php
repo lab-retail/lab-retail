@@ -9,22 +9,24 @@
         <link rel="stylesheet" href="css/styles.css" media="screen">
     </head>
     <body>
-        <h1>Lab Retail - Demo - August 2021</h1>
+        <main>
+            <h1>Lab Retail - Demo - August 2021</h1>
 
-        <div id="mainTable">
-            <div class="columnHeader item">DateTime</div>
-            <div class="columnHeader item">ProdX</div>
-            <div class="columnHeader item">ProdY</div>
-        </div>
+            <div id="mainTable">
+                <div class="columnHeader item">DateTime</div>
+                <div class="columnHeader item">ProdX</div>
+                <div class="columnHeader item">ProdY</div>
+            </div>
 
-        <section>
-            <h2>Total: <span id="total"></span></h2>
-            <h2>Nivel más visitado: <span id="nivelMasVisitado"></span></h2>
-         
-            <!-- <div id="donutChart"></div> -->
-            <div id="pieChart" class="chartContainer"></div>
-            <div id="barChart" class="chartContainer"></div>
-        </section>
+            <section>
+                <h2>Total: <span id="total"></span></h2>
+                <h2>Nivel más visitado: <span id="nivelMasVisitado"></span></h2>
+            
+                <!-- <div id="donutChart"></div> -->
+                <div id="pieChart" class="chartContainer"></div>
+                <div id="barChart" class="chartContainer"></div>
+            </section>
+        </main>
    
         <?php
             require_once('readMail.php');

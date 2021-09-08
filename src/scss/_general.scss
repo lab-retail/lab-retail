@@ -2,6 +2,7 @@
 -------------------------------------------------- */
 body{
     margin:0;
+    font-size: 3.2vw;
     color: $oblivionGreen;
     font-family: $raleway-googole-font;
     background-color: #0a0a0a;
@@ -12,11 +13,25 @@ h2 {
     margin: 3vw 0;
     text-align: center;
     letter-spacing: 0.4vw;
-    font-family: $banger-google-font;
+
+    @media (min-width: 1200px) {
+        margin: 36px 0;
+    }
 }
 
 h1 {
     font-size: 7vw;
+    font-family: $banger-google-font;
+
+    @media (min-width: 1200px) {
+        font-size: 84px;
+    }
+}
+
+h2 {
+    @media (min-width: 1200px) {
+        font-size: 39px;
+    }
 }
 
 section {

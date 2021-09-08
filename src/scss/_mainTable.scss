@@ -6,15 +6,29 @@
     border-bottom: dashed 0.7vw $borderColor;
     margin-bottom: 3vw;
 
+    @media (min-width: 1200px) {
+        margin-bottom: 36px;
+        padding: 36px 0;
+        border-top-width: 8.39px;
+        border-bottom-width: 8.39px;
+    }
+
     .item {
         margin-bottom: 2vw;
         text-align: center;
-        font-size: 3.2vw;
         text-transform: uppercase;
+
+       @media (min-width: 1200px) {
+            font-size: 39px;
+        }
     }
 
     .columnHeader {
         font-size: 4vw;
+
+       @media (min-width: 1200px) {
+            font-size: 48px;
+        }
     }
 }
 
