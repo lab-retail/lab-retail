@@ -87,8 +87,7 @@ section {
 #mainTable {
   display: grid;
   padding: 3vw 0;
-  margin-bottom: 2vw;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr;
   border-top: dashed 0.7vw #3b3f30;
   border-bottom: dashed 0.7vw #3b3f30;
   margin-bottom: 3vw;
