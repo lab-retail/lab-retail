@@ -64,7 +64,7 @@ let showDonutChartWithText = () => {
             .outerRadius(outerRadius)
             .innerRadius(innerRadius);
 
-    let svg=d3.select("#chart")
+    let svg=d3.select("#pieChart")
             .append("svg")
             .attr("width",w)
             .attr("height",h)
@@ -148,10 +148,113 @@ let showDonutChartWithText = () => {
     setTimeout(restOfTheData,1000);
 }
 
+let dataJson = [
+    {
+        "year":"2017", 
+        "total_pills":2000, 
+        "errorless":1200, 
+        "anything":10
+    },
+    {
+        "year":"2018", 
+        "total_pills":3000, 
+        "errorless":2250, 
+        "anything":10
+    },
+    {
+        "year":"2019", 
+        "total_pills":3500, 
+        "errorless":3150, 
+        "anything":10
+    }    
+];
+
+// let dataJson = [
+//     {
+//         "prodX" : dataset[0].prodX
+//     },
+//     {
+//         "prodX" : dataset[0].prodY
+//     }
+// ]
+/**
+ * 
+ */
+ let showBarChart = () => {
+    // let width=300,
+        // height=300,
+    let margin = {
+            top: 20,
+            right: 60,
+            bottom: 30,
+            left: 40
+        },
+        width = 300 - margin.left - margin.right,
+        height = 300 - margin.top - margin.bottom;
+    
+    let svg = d3.select("#barChart")
+            .append("svg")
+            .attr("width",width)
+            .attr("height",height)
+            .append("g")
+            // .attr("transform",'translate('+width/2+','+height/2+')');
+
+     let x = d3.scaleBand()
+        .rangeRound([0, width])
+        .paddingInner(0.1)
+        .align(0.2);
+
+    let y = d3.scaleLinear().range([height, 0]);
+
+    let z = d3.scaleOrdinal()
+        .range(["#4fbbc7", "#1f77b4"]);
+
+    let stack = d3.stack()
+        .order(d3.stackOrderNone)
+        .offset(d3.stackOffsetExpand);  
+    
+    data = dataJson;
+    data.forEach(function(d){d.error=d.total_pills-d.errorless});
+
+    x.domain(data.map(function(d) { return d.year; }));
+    z.domain(["error", "errorless"]);
+
+    let serie = svg.selectAll(".serie")
+    .data(stack.keys(["errorless","error"])(data))
+    .enter().append("g")
+        .attr("class", "serie")
+        .attr("fill", function(d) { return z(d.key); });
+
+    serie.selectAll("rect")
+        .data(function(d) {return d; })
+        .enter().append("rect")
+        .attr("x", function(d) {
+            return x(d.data.year);
+        })
+        .attr("y", function(d) {
+            console.log(y(d[1]));
+            return y(d[1]); 
+        })
+        .attr("height", function(d) { return y(d[0]) - y(d[1]); })
+        .attr("width", x.bandwidth());
+
+    svg.append("g")
+        .attr("class", "axis axis--x")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+    svg.append("g")
+        .attr("class", "axis axis--y")
+        .call(d3.axisLeft(y).ticks(10, "%"));
+
+}
+
+//-------------------------------------------
 // init all functions
 showMainTable();
 // showDonutChart();
 showDonutChartWithText();
+showBarChart();
 
 
 
@@ -232,3 +335,179 @@ showDonutChartWithText();
  *          ]
  * }
  */
+
+
+/*
+
+var data = [
+    {
+        "State": "VT",
+        "Under 5 Years": 32635,
+        "5 to 13 Years": 62538,
+        "14 to 17 Years": 33757,
+        "18 to 24 Years": 61679,
+        "25 to 44 Years": 155419,
+        "45 to 64 Years": 188593,
+        "65 Years and Over": 86649
+    }, {
+        "State": "VA",
+        "Under 5 Years": 522672,
+        "5 to 13 Years": 887525,
+        "14 to 17 Years": 413004,
+        "18 to 24 Years": 768475,
+        "25 to 44 Years": 2203286,
+        "45 to 64 Years": 2033550,
+        "65 Years and Over": 940577
+    }, {
+        "State": "WA",
+        "Under 5 Years": 433119,
+        "5 to 13 Years": 750274,
+        "14 to 17 Years": 357782,
+        "18 to 24 Years": 610378,
+        "25 to 44 Years": 1850983,
+        "45 to 64 Years": 1762811,
+        "65 Years and Over": 783877
+    }, {
+        "State": "WV",
+        "Under 5 Years": 105435,
+        "5 to 13 Years": 189649,
+        "14 to 17 Years": 91074,
+        "18 to 24 Years": 157989,
+        "25 to 44 Years": 470749,
+        "45 to 64 Years": 514505,
+        "65 Years and Over": 285067
+    }, {
+        "State": "WI",
+        "Under 5 Years": 362277,
+        "5 to 13 Years": 640286,
+        "14 to 17 Years": 311849,
+        "18 to 24 Years": 553914,
+        "25 to 44 Years": 1487457,
+        "45 to 64 Years": 1522038,
+        "65 Years and Over": 750146
+    }, {
+        "State": "WY",
+        "Under 5 Years": 38253,
+        "5 to 13 Years": 60890,
+        "14 to 17 Years": 29314,
+        "18 to 24 Years": 53980,
+        "25 to 44 Years": 137338,
+        "45 to 64 Years": 147279,
+        "65 Years and Over": 65614
+    }
+];
+
+let complexBarChart = () => {
+    var svg = d3.select("svg"),
+        margin = {
+        top: 20,
+        right: 20,
+        bottom: 30,
+        left: 40
+        },
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom,
+        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var x = d3.scaleBand()
+    .rangeRound([0, width])
+    .paddingInner(0.05)
+    .align(0.1);
+
+    var y = d3.scaleLinear()
+    .rangeRound([height, 0]);
+
+    var z = d3.scaleOrdinal()
+    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+    // fix pre-processing
+    var keys = [];
+    for (key in data[0]){
+        if (key != "State")
+            keys.push(key);
+    }
+    data.forEach(function(d){
+        d.total = 0;
+        keys.forEach(function(k){
+            d.total += d[k];
+        })
+    });
+
+    data.sort(function(a, b) {
+        return b.total - a.total;
+    });
+    x.domain(data.map(function(d) {
+        return d.State;
+    }));
+    y.domain([0, d3.max(data, function(d) {
+        return d.total;
+    })]).nice();
+    z.domain(keys);
+
+    g.append("g")
+    .selectAll("g")
+    .data(d3.stack().keys(keys)(data))
+    .enter().append("g")
+    .attr("fill", function(d) {
+        return z(d.key);
+    })
+    .selectAll("rect")
+    .data(function(d) {
+        return d;
+    })
+    .enter().append("rect")
+    .attr("x", function(d) {
+        return x(d.data.State);
+    })
+    .attr("y", function(d) {
+        return y(d[1]);
+    })
+    .attr("height", function(d) {
+        return y(d[0]) - y(d[1]);
+    })
+    .attr("width", x.bandwidth());
+
+    g.append("g")
+    .attr("class", "axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x));
+
+    g.append("g")
+    .attr("class", "axis")
+    .call(d3.axisLeft(y).ticks(null, "s"))
+    .append("text")
+    .attr("x", 2)
+    .attr("y", y(y.ticks().pop()) + 0.5)
+    .attr("dy", "0.32em")
+    .attr("fill", "#000")
+    .attr("font-weight", "bold")
+    .attr("text-anchor", "start")
+    .text("Population");
+
+  var legend = g.append("g")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", 10)
+    .attr("text-anchor", "end")
+    .selectAll("g")
+    .data(keys.slice().reverse())
+    .enter().append("g")
+    .attr("transform", function(d, i) {
+      return "translate(0," + i * 20 + ")";
+    });
+
+  legend.append("rect")
+    .attr("x", width - 19)
+    .attr("width", 19)
+    .attr("height", 19)
+    .attr("fill", z);
+
+  legend.append("text")
+    .attr("x", width - 24)
+    .attr("y", 9.5)
+    .attr("dy", "0.32em")
+    .text(function(d) {
+      return d;
+    });
+}
+
+*/

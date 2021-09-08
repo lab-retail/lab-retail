@@ -18,10 +18,12 @@
         </div>
 
         <section>
-            <!-- <div id="donutChart"></div> -->
-            <div id="chart" class="chartContainer"></div>
             <h2>Total: <span id="total"></span></h2>
             <h2>Nivel más visitado: <span id="nivelMasVisitado"></span></h2>
+         
+            <!-- <div id="donutChart"></div> -->
+            <div id="pieChart" class="chartContainer"></div>
+            <div id="barChart" class="chartContainer"></div>
         </section>
    
         <?php
