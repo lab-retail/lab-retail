@@ -170,6 +170,7 @@ let showDonutChartWithText = () => {
  * 
  */
 let showBarChart = () => {
+    const maxAmount = Math.max(parseInt(dataset[0].prodX), parseInt(dataset[0].prodY));
     const dataForBarChart = [
         {
             "productName": "ProdX",
@@ -196,12 +197,12 @@ let showBarChart = () => {
         .padding(0.1)
 
     const y = d3.scaleLinear()
-        .domain([0, 10])
+        .domain([0, maxAmount])
         .range([height - margin.bottom, margin.top])
 
     svg
         .append("g")
-        .attr("fill", 'royalblue')
+        .attr("fill", 'orange')
         .selectAll("rect")
         .data(dataForBarChart.sort((a, b) => d3.descending(a.value, b.value)))
         .join("rect")
