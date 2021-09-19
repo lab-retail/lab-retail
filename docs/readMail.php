@@ -39,12 +39,11 @@
                         $date = date('d F, Y, H:i:s', strtotime($overview[0]->date));
                         $emailContent = substr(quoted_printable_decode($messageExcerpt), 0, 22); 
 
-                        $jsonObject = $this->parseEmailContent($date, $emailContent);
+                        array_push($jsonObject, $this->parseEmailContent($date, $emailContent));
                     } // End foreach
         
-                    $jsonContent .= json_encode($jsonObject).PHP_EOL;
-                    // $jsonContent .= '}'. PHP_EOL;
-                    echo $jsonContent ;
+                    $jsonContent = json_encode($jsonObject).PHP_EOL;
+                    echo $jsonContent;
         
                 } // end if
             } // end else
