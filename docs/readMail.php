@@ -31,7 +31,7 @@
         
                 if (! empty($emailData)) {
                     // $jsonContent .= '{ "dates":';
-        
+
                     foreach ($emailData as $emailIdent) {
                         $overview = imap_fetch_overview($connection, $emailIdent, 0);
                         $message = imap_fetchbody($connection, $emailIdent, '1');
@@ -39,7 +39,17 @@
                         $date = date('d F, Y, H:i:s', strtotime($overview[0]->date));
                         $emailContent = substr(quoted_printable_decode($messageExcerpt), 0, 22); 
 
-                        array_push($jsonObject, $this->parseEmailContent($date, $emailContent));
+                        $dateObject = new stdClass();
+                        $dateObject->date   = $date;
+                        $dateObject->id     = substr($emailContent, 1, 1);
+                        $dateObject->todos  = substr($emailContent, 3, 3);
+                        $dateObject->prodX  = substr($emailContent, 7, 3);
+                        $dateObject->prodY  = substr($emailContent, 11, 3);
+                        $dateObject->nivel  = substr($emailContent, 15, 1);
+                        $dateObject->mayor  = substr($emailContent, 17, 2);
+                        $dateObject->peor   = substr($emailContent, 20, 2);
+
+                        array_push($jsonObject, $dateObject);
                     } // End foreach
         
                     $jsonContent = json_encode($jsonObject).PHP_EOL;
@@ -78,7 +88,7 @@
             pos[19] = P
             */
       
-            return $emailContentArray;
+            return (object)$emailContentArray;
         }
     }
 ?>
