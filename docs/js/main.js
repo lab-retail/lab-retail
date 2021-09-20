@@ -12,6 +12,7 @@ let init = (dataset) => {
         dateTitleElement,
         nivelElement,
         totalElement,
+        idElement,
         pieChartID,
         pieChartElement,
         barChartID,
@@ -23,10 +24,12 @@ let init = (dataset) => {
         dateTitleElement = document.createElement("h2");
         nivelElement = document.createElement("h2");
         totalElement = document.createElement("h2");
+        idElement = document.createElement("h2");
         
         dateTitleElement.innerHTML = oneDayOfData.date;
         nivelElement.innerHTML = "Nivel más visitado: " + oneDayOfData.nivel;
         totalElement.innerHTML = "Todos: " + oneDayOfData.todos;
+        idElement.innerHTML = "ID: " + oneDayOfData.id;
 
         // Prepare data for Dount Chart With Text
         const dataArrayforPieChart = [
@@ -38,7 +41,7 @@ let init = (dataset) => {
             }
         ];
 
-        pieChartID = 'pieChartID' + oneDayOfData.id;
+        pieChartID = 'pieChartID' + x;
         pieChartElement = document.createElement('div');
         pieChartElement.id = pieChartID;
         pieChartElement.classList.add('chartContainer');
@@ -54,7 +57,7 @@ let init = (dataset) => {
             }
         ];
 
-        barChartID = 'barChartID' + oneDayOfData.id;
+        barChartID = 'barChartID' + x;
         barChartElement = document.createElement('div');
         barChartElement.id = barChartID;
         barChartElement.classList.add('chartContainer');
@@ -63,6 +66,7 @@ let init = (dataset) => {
         sectionElement.append(dateTitleElement);
         sectionElement.append(nivelElement);
         sectionElement.append(totalElement);
+        sectionElement.append(idElement);
         sectionElement.append(pieChartElement);
         sectionElement.append(barChartElement);
         
