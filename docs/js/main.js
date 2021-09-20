@@ -1,34 +1,79 @@
-console.log(dataset);
+// console.log(dataset);
 
 /**
  * Main function to init all graphics and tables
  * Iterate through the dataset
  */
 let init = (dataset) => {
+    
     let mainElement = document.getElementsByTagName('main')[0],
         oneDayOfData,
         sectionElement,
         dateTitleElement,
         nivelElement,
-        totalElement;
+        totalElement,
+        pieChartID,
+        pieChartElement,
+        barChartID,
+        barChartElement;
 
     for (let x in dataset) {
         oneDayOfData = dataset[x];
-        // showMainTable(oneDayOfData);
         sectionElement = document.createElement("section");
         dateTitleElement = document.createElement("h2");
         nivelElement = document.createElement("h2");
         totalElement = document.createElement("h2");
-    
+        
         dateTitleElement.innerHTML = oneDayOfData.date;
         nivelElement.innerHTML = "Nivel más visitado: " + oneDayOfData.nivel;
         totalElement.innerHTML = "Todos: " + oneDayOfData.todos;
 
+        // Prepare data for Dount Chart With Text
+        const dataArrayforPieChart = [
+            {
+                "prodX" : oneDayOfData.prodX
+            },
+            {
+                "prodX" : oneDayOfData.prodY
+            }
+        ];
+
+        pieChartID = 'pieChartID' + oneDayOfData.id;
+        pieChartElement = document.createElement('div');
+        pieChartElement.id = pieChartID;
+        pieChartElement.classList.add('chartContainer');
+
+        // Prepare data for Bar Chart
+        const dataForBarChart = [
+            {
+                "productName": "ProdX",
+                "value": oneDayOfData.prodX
+            }, {
+                "productName": "ProdY",
+                "value": oneDayOfData.prodY
+            }
+        ];
+
+        barChartID = 'barChartID' + oneDayOfData.id;
+        barChartElement = document.createElement('div');
+        barChartElement.id = barChartID;
+        barChartElement.classList.add('chartContainer');
+
+        // add all elements to section element
         sectionElement.append(dateTitleElement);
         sectionElement.append(nivelElement);
         sectionElement.append(totalElement);
+        sectionElement.append(pieChartElement);
+        sectionElement.append(barChartElement);
+        
         mainElement.append(sectionElement);
+
+        // once chart container Elements are added, add Charts
+        showBarChart(dataForBarChart, barChartID);
+        showDonutChartWithText(dataArrayforPieChart, pieChartID);
     }
+
+    showMainTable();
 }
 
 /**
@@ -41,7 +86,6 @@ let showMainTable = () => {
     
     const totalEl = document.getElementById('total');
     const mainTable = document.getElementById('mainTable');
-    const nivelEl = document.getElementById('nivelMasVisitado');
 
     for (let x in dataset) {
         htmlString += '<div class="item">'
@@ -54,31 +98,18 @@ let showMainTable = () => {
         htmlString += dataset[x].prodY
         htmlString += '</div>';
         total += parseInt(dataset[x].todos);
-        nivel = parseInt(dataset[x].nivel);
     }
     
     totalEl.innerHTML = total;
-    nivelEl.innerHTML = nivel;
     mainTable.innerHTML += htmlString;
 }
 
 /**
- * 
+ * Show Donut Chart
  */
-let showDonutChartWithText = () => {
-    // let dataArray = dataset;
-    let dataArray = [
-        {
-            "prodX" : dataset[0].prodX
-        },
-        {
-            "prodX" : dataset[0].prodY
-        }
-    ]
-
+let showDonutChartWithText = (dataArray, elementID) => {
     let pie=d3.pie()
             .value(function(d){
-                // return d.value
                 return d.prodX
             })
             .sort(null)
@@ -95,7 +126,7 @@ let showDonutChartWithText = () => {
             .outerRadius(outerRadius)
             .innerRadius(innerRadius);
 
-    let svg=d3.select("#pieChart")
+    let svg=d3.select('#' + elementID)
             .append("svg")
             .attr("width",w)
             .attr("height",h)
@@ -182,30 +213,20 @@ let showDonutChartWithText = () => {
 /**
  * 
  */
-let showBarChart = () => {
-    const maxAmount = Math.max(parseInt(dataset[0].prodX), parseInt(dataset[0].prodY));
-    const dataForBarChart = [
-        {
-            "productName": "ProdX",
-            "value": dataset[0].prodX
-        }, {
-            "productName": "ProdY",
-            "value": dataset[0].prodY
-        }
-    ];
-
+let showBarChart = (dataArray, elementID) => {
+    const maxAmount = Math.max(parseInt(dataArray[0].value), parseInt(dataArray[1].value));
     const width = 500;
     const height = 400;
     const margin = { top: 50, bottom: 50, left: 50, right: 50 };
 
-    const svg = d3.select('#barChart')
+    const svg = d3.select('#' + elementID)
         .append('svg')
         .attr('width', width - margin.left - margin.right)
         .attr('height', height - margin.top - margin.bottom)
         .attr("viewBox", [0, 0, width, height]);
 
     const x = d3.scaleBand()
-        .domain(d3.range(dataForBarChart.length))
+        .domain(d3.range(dataArray.length))
         .range([margin.left, width - margin.right])
         .padding(0.1)
 
@@ -215,9 +236,9 @@ let showBarChart = () => {
 
     svg
         .append("g")
-        .attr("fill", 'orange')
+        .attr("fill", '#b54fc7')
         .selectAll("rect")
-        .data(dataForBarChart.sort((a, b) => d3.descending(a.value, b.value)))
+        .data(dataArray.sort((a, b) => d3.descending(a.value, b.value)))
         .join("rect")
         .attr("x", (d, i) => x(i))
         .attr("y", d => y(d.value))
@@ -228,13 +249,13 @@ let showBarChart = () => {
 
     function yAxis(g) {
         g.attr("transform", `translate(${margin.left}, 0)`)
-        .call(d3.axisLeft(y).ticks(null, dataForBarChart.format))
+        .call(d3.axisLeft(y).ticks(null, dataArray.format))
         .attr("font-size", '20px')
     }
 
     function xAxis(g) {
         g.attr("transform", `translate(0,${height - margin.bottom})`)
-        .call(d3.axisBottom(x).tickFormat(i => dataForBarChart[i].productName))
+        .call(d3.axisBottom(x).tickFormat(i => dataArray[i].productName))
         .attr("font-size", '20px')
     }
 
@@ -242,28 +263,6 @@ let showBarChart = () => {
     svg.append("g").call(yAxis);
     svg.node();
 }
-
-let dataJson = [
-    {
-        "year":"2017", 
-        "total_pills":2000, 
-        "errorless":1200, 
-        "anything":10
-    },
-    {
-        "year":"2018", 
-        "total_pills":3000, 
-        "errorless":2250, 
-        "anything":10
-    },
-    {
-        "year":"2019", 
-        "total_pills":3500, 
-        "errorless":3150, 
-        "anything":10
-    }    
-];
-
 
 
 window.mobileCheck = () => {
@@ -290,220 +289,4 @@ window.onresize = checkWidth;
 //-------------------------------------------
 // init all functions (pageLoad)
 init(dataset);
-showMainTable();
-// showDonutChart();
-showDonutChartWithText();
-showBarChart();
 checkWidth();
-
-
-
-
-
-/**
- * dataset contains JSON Content from PHP readMail function
- * dataset can be used throughout all functions
- * dataset content format
- * {
- *      dates: 
- *          [
- *              {
- *                  date: DDMMYY, 
- *                  [
- *                       { id: X, value: Y },
- *                       { id: X, value: Y }
- *                  ],
- *              }, 
- *              {
- *                  date: DDMMYY, 
- *                  [
- *                      { id: X, value: Y },
- *                      { id: X, value: Y }
- *                  ],
- *              }    
- *          ]
- * }
- */
-
-
-
-// values and colors Arrays will be used by D3 graphs
-// let valuesArray = [];
-// let colorsArray = ["#53a1aa", "#c6e4e4", "#dbdcc3", "#d66747", "#782e1f"];
-// let colorsArray = ["#53a1aa", "#76AFB7", "#c6e4e4", "#dbdcc3", "#d66747", "#782e1f"];
-
-
-/*
-
-var data = [
-    {
-        "State": "VT",
-        "Under 5 Years": 32635,
-        "5 to 13 Years": 62538,
-        "14 to 17 Years": 33757,
-        "18 to 24 Years": 61679,
-        "25 to 44 Years": 155419,
-        "45 to 64 Years": 188593,
-        "65 Years and Over": 86649
-    }, {
-        "State": "VA",
-        "Under 5 Years": 522672,
-        "5 to 13 Years": 887525,
-        "14 to 17 Years": 413004,
-        "18 to 24 Years": 768475,
-        "25 to 44 Years": 2203286,
-        "45 to 64 Years": 2033550,
-        "65 Years and Over": 940577
-    }, {
-        "State": "WA",
-        "Under 5 Years": 433119,
-        "5 to 13 Years": 750274,
-        "14 to 17 Years": 357782,
-        "18 to 24 Years": 610378,
-        "25 to 44 Years": 1850983,
-        "45 to 64 Years": 1762811,
-        "65 Years and Over": 783877
-    }, {
-        "State": "WV",
-        "Under 5 Years": 105435,
-        "5 to 13 Years": 189649,
-        "14 to 17 Years": 91074,
-        "18 to 24 Years": 157989,
-        "25 to 44 Years": 470749,
-        "45 to 64 Years": 514505,
-        "65 Years and Over": 285067
-    }, {
-        "State": "WI",
-        "Under 5 Years": 362277,
-        "5 to 13 Years": 640286,
-        "14 to 17 Years": 311849,
-        "18 to 24 Years": 553914,
-        "25 to 44 Years": 1487457,
-        "45 to 64 Years": 1522038,
-        "65 Years and Over": 750146
-    }, {
-        "State": "WY",
-        "Under 5 Years": 38253,
-        "5 to 13 Years": 60890,
-        "14 to 17 Years": 29314,
-        "18 to 24 Years": 53980,
-        "25 to 44 Years": 137338,
-        "45 to 64 Years": 147279,
-        "65 Years and Over": 65614
-    }
-];
-
-let complexBarChart = () => {
-    var svg = d3.select("svg"),
-        margin = {
-        top: 20,
-        right: 20,
-        bottom: 30,
-        left: 40
-        },
-        width = +svg.attr("width") - margin.left - margin.right,
-        height = +svg.attr("height") - margin.top - margin.bottom,
-        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    var x = d3.scaleBand()
-    .rangeRound([0, width])
-    .paddingInner(0.05)
-    .align(0.1);
-
-    var y = d3.scaleLinear()
-    .rangeRound([height, 0]);
-
-    var z = d3.scaleOrdinal()
-    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-
-    // fix pre-processing
-    var keys = [];
-    for (key in data[0]){
-        if (key != "State")
-            keys.push(key);
-    }
-    data.forEach(function(d){
-        d.total = 0;
-        keys.forEach(function(k){
-            d.total += d[k];
-        })
-    });
-
-    data.sort(function(a, b) {
-        return b.total - a.total;
-    });
-    x.domain(data.map(function(d) {
-        return d.State;
-    }));
-    y.domain([0, d3.max(data, function(d) {
-        return d.total;
-    })]).nice();
-    z.domain(keys);
-
-    g.append("g")
-    .selectAll("g")
-    .data(d3.stack().keys(keys)(data))
-    .enter().append("g")
-    .attr("fill", function(d) {
-        return z(d.key);
-    })
-    .selectAll("rect")
-    .data(function(d) {
-        return d;
-    })
-    .enter().append("rect")
-    .attr("x", function(d) {
-        return x(d.data.State);
-    })
-    .attr("y", function(d) {
-        return y(d[1]);
-    })
-    .attr("height", function(d) {
-        return y(d[0]) - y(d[1]);
-    })
-    .attr("width", x.bandwidth());
-
-    g.append("g")
-    .attr("class", "axis")
-    .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x));
-
-    g.append("g")
-    .attr("class", "axis")
-    .call(d3.axisLeft(y).ticks(null, "s"))
-    .append("text")
-    .attr("x", 2)
-    .attr("y", y(y.ticks().pop()) + 0.5)
-    .attr("dy", "0.32em")
-    .attr("fill", "#000")
-    .attr("font-weight", "bold")
-    .attr("text-anchor", "start")
-    .text("Population");
-
-  var legend = g.append("g")
-    .attr("font-family", "sans-serif")
-    .attr("font-size", 10)
-    .attr("text-anchor", "end")
-    .selectAll("g")
-    .data(keys.slice().reverse())
-    .enter().append("g")
-    .attr("transform", function(d, i) {
-      return "translate(0," + i * 20 + ")";
-    });
-
-  legend.append("rect")
-    .attr("x", width - 19)
-    .attr("width", 19)
-    .attr("height", 19)
-    .attr("fill", z);
-
-  legend.append("text")
-    .attr("x", width - 24)
-    .attr("y", 9.5)
-    .attr("dy", "0.32em")
-    .text(function(d) {
-      return d;
-    });
-}
-
-*/
