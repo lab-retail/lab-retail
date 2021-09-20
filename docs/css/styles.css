@@ -98,6 +98,7 @@ h1 {
 
 section {
   margin-bottom: 5vw;
+  border-bottom: dashed 0.7vw #3b3f30;
 }
 
 .subTitle {
@@ -156,4 +157,3 @@ section {
 .legend {
   fill: #FFFFFF;
 }
-/*# sourceMappingURL=styles.css.map */
