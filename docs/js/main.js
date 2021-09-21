@@ -25,7 +25,7 @@ let init = (dataset) => {
         nivelElement = document.createElement("h2");
         totalElement = document.createElement("h2");
         idElement = document.createElement("h2");
-        console.log(oneDayOfData);
+
         dateTitleElement.innerHTML = oneDayOfData.date;
         nivelElement.innerHTML = "Most Visited Level: " + oneDayOfData.nivel;
         totalElement.innerHTML = "Total: " + oneDayOfData.todos;
@@ -244,6 +244,9 @@ let showBarChart = (dataArray, elementID) => {
     const height = 400;
     const margin = { top: 50, bottom: 50, left: 50, right: 50 };
 
+    const colorArray = ["#FF0000", "#00FF00", "#0000FF"];
+    let color = d3.scaleOrdinal(d3.schemeCategory10);
+
     const svg = d3.select('#' + elementID)
         .append('svg')
         .attr('width', width - margin.left - margin.right)
@@ -261,7 +264,6 @@ let showBarChart = (dataArray, elementID) => {
 
     svg
         .append("g")
-        .attr("fill", '#b54fc7')
         .selectAll("rect")
         .data(dataArray.sort((a, b) => d3.descending(a.value, b.value)))
         .join("rect")
@@ -270,7 +272,10 @@ let showBarChart = (dataArray, elementID) => {
         .attr('title', (d) => d.value)
         .attr("class", "rect")
         .attr("height", d => y(0) - y(d.value))
-        .attr("width", x.bandwidth());
+        .attr("width", x.bandwidth())
+        .attr("fill",function(d,i){
+            return color(d.value);
+        });
 
     function yAxis(g) {
         g.attr("transform", `translate(${margin.left}, 0)`)
