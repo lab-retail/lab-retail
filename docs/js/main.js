@@ -34,19 +34,19 @@ let init = (dataset) => {
         // Prepare data for Dount Chart With Text
         const dataArrayforPieChart = [
             {
-                "prodW" : oneDayOfData.prodW
+                "value" : oneDayOfData.prodW
             },
             {
-                "prodX" : oneDayOfData.prodX
+                "value" : oneDayOfData.prodX
             },
             {
-                "prodX" : oneDayOfData.prodY
+                "value" : oneDayOfData.prodY
             },
             {
-                "prodZ" : oneDayOfData.prodZ
+                "value" : oneDayOfData.prodZ
             }
         ];
-
+        
         pieChartID = 'pieChartID' + x;
         pieChartElement = document.createElement('div');
         pieChartElement.id = pieChartID;
@@ -135,7 +135,7 @@ let showMainTable = () => {
 let showDonutChartWithText = (dataArray, elementID) => {
     let pie=d3.pie()
             .value(function(d){
-                return d.prodX
+                return d.value
             })
             .sort(null)
             .padAngle(.03);
@@ -143,7 +143,7 @@ let showDonutChartWithText = (dataArray, elementID) => {
     let w=300,h=300;
 
     let outerRadius=w/2;
-    let innerRadius=100;
+    let innerRadius=80;
 
     let color = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -194,7 +194,7 @@ let showDonutChartWithText = (dataArray, elementID) => {
                     return d.data.prodX;
                 })
                 .style('fill','#fff')
-                .style('font-size','4vw');
+                .style('font-size','3vw');
 
         // let legendRectSize=20;
         // let legendSpacing=7;
