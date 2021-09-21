@@ -10,12 +10,14 @@
     </head>
     <body>
         <main>
-            <h1>Lab Retail - Demo - August 2021</h1>
+            <h1>Main Title 2021</h1>
 
             <div id="mainTable">
-                <div class="columnHeader item">DateTime</div>
+                <div class="columnHeader item">Date</div>
+                <div class="columnHeader item">ProdW</div>
                 <div class="columnHeader item">ProdX</div>
                 <div class="columnHeader item">ProdY</div>
+                <div class="columnHeader item">ProdZ</div>
             </div>
 
             <section>

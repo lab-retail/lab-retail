@@ -25,19 +25,25 @@ let init = (dataset) => {
         nivelElement = document.createElement("h2");
         totalElement = document.createElement("h2");
         idElement = document.createElement("h2");
-        
+        console.log(oneDayOfData);
         dateTitleElement.innerHTML = oneDayOfData.date;
-        nivelElement.innerHTML = "Nivel más visitado: " + oneDayOfData.nivel;
-        totalElement.innerHTML = "Todos: " + oneDayOfData.todos;
+        nivelElement.innerHTML = "Most Visited Level: " + oneDayOfData.nivel;
+        totalElement.innerHTML = "Total: " + oneDayOfData.todos;
         idElement.innerHTML = "ID: " + oneDayOfData.id;
 
         // Prepare data for Dount Chart With Text
         const dataArrayforPieChart = [
             {
+                "prodW" : oneDayOfData.prodW
+            },
+            {
                 "prodX" : oneDayOfData.prodX
             },
             {
                 "prodX" : oneDayOfData.prodY
+            },
+            {
+                "prodZ" : oneDayOfData.prodZ
             }
         ];
 
@@ -49,11 +55,20 @@ let init = (dataset) => {
         // Prepare data for Bar Chart
         const dataForBarChart = [
             {
+                "productName": "ProdW",
+                "value": oneDayOfData.prodW
+            },
+            {
                 "productName": "ProdX",
                 "value": oneDayOfData.prodX
-            }, {
+            },
+            {
                 "productName": "ProdY",
                 "value": oneDayOfData.prodY
+            },
+            {
+                "productName": "ProdZ",
+                "value": oneDayOfData.prodZ
             }
         ];
 
@@ -96,10 +111,16 @@ let showMainTable = () => {
         htmlString += dataset[x].date;
         htmlString += '</div>';
         htmlString += '<div class="item">'
+        htmlString += dataset[x].prodW
+        htmlString += '</div>';
+        htmlString += '<div class="item">'
         htmlString += dataset[x].prodX
         htmlString += '</div>';
         htmlString += '<div class="item">'
         htmlString += dataset[x].prodY
+        htmlString += '</div>';
+        htmlString += '<div class="item">'
+        htmlString += dataset[x].prodZ
         htmlString += '</div>';
         total += parseInt(dataset[x].todos);
     }

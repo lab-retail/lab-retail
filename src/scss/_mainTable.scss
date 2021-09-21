@@ -1,7 +1,7 @@
 #mainTable {
     display: grid;
-    padding: 3vw 0;
-    grid-template-columns: 2fr 1fr 1fr;
+    padding: 2vw 0;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
     border-top: dashed 0.7vw $borderColor;
     border-bottom: dashed 0.7vw $borderColor;
     margin-bottom: 3vw;
@@ -16,6 +16,8 @@
     .item {
         margin-bottom: 2vw;
         text-align: center;
+        font-size: 2.7vw;
+        font-weight: 300;
         text-transform: uppercase;
 
        @media (min-width: 1200px) {
@@ -24,8 +26,8 @@
     }
 
     .columnHeader {
-        font-size: 4vw;
-
+        font-size: 3.3vw;
+        font-weight: 500;
        @media (min-width: 1200px) {
             font-size: 48px;
         }
