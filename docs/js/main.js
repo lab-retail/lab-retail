@@ -165,7 +165,7 @@ let showDonutChartWithText = (dataArray, elementID) => {
             .append('path')
             .attr("d",arc)
             .attr("fill",function(d,i){
-                return color(d.data.prodX);
+                return color(d.data.value);
             });
 
     path.transition()
@@ -191,7 +191,7 @@ let showDonutChartWithText = (dataArray, elementID) => {
                 .attr("text-anchor", "middle")
                 .text(function(d){
                     // return d.data.value+"%";
-                    return d.data.prodX;
+                    return d.data.value;
                 })
                 .style('fill','#fff')
                 .style('font-size','3vw');
