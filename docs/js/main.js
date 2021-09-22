@@ -18,6 +18,9 @@ let init = (dataset) => {
         barChartID,
         barChartElement;
 
+    // color for pieChart and barChart
+    let colorRange = ['#FFA500','#0000FF', '#3FF02B', '#FAF63F']; // orange, blue, green, yellow
+
     for (let x in dataset) {
         oneDayOfData = dataset[x];
         sectionElement = document.createElement("section");
@@ -25,7 +28,7 @@ let init = (dataset) => {
         nivelElement = document.createElement("h2");
         totalElement = document.createElement("h2");
         idElement = document.createElement("h2");
-        console.log(oneDayOfData);
+        
         dateTitleElement.innerHTML = oneDayOfData.date;
         nivelElement.innerHTML = "Most Visited Level: " + oneDayOfData.nivel;
         totalElement.innerHTML = "Total: " + oneDayOfData.todos;
@@ -88,8 +91,8 @@ let init = (dataset) => {
         mainElement.append(sectionElement);
 
         // once chart container Elements are added, add Charts
-        showBarChart(dataForBarChart, barChartID);
-        showDonutChartWithText(dataArrayforPieChart, pieChartID);
+        showBarChart(dataForBarChart, barChartID, colorRange);
+        showDonutChartWithText(dataArrayforPieChart, pieChartID, colorRange);
     }
 
     showMainTable();
@@ -132,7 +135,7 @@ let showMainTable = () => {
 /**
  * Show Donut Chart
  */
-let showDonutChartWithText = (dataArray, elementID) => {
+let showDonutChartWithText = (dataArray, elementID, colorRange) => {
     let pie=d3.pie()
             .value(function(d){
                 return d.value
@@ -140,12 +143,11 @@ let showDonutChartWithText = (dataArray, elementID) => {
             .sort(null)
             .padAngle(.03);
 
-    let w=300,h=300;
+    let w=300,h=300,
+        outerRadius=w/2,
+        innerRadius=80;        
 
-    let outerRadius=w/2;
-    let innerRadius=80;
-
-    let color = d3.scaleOrdinal(d3.schemeCategory10);
+    let color = d3.scaleOrdinal(colorRange);
 
     let arc=d3.arc()
             .outerRadius(outerRadius)
@@ -190,10 +192,9 @@ let showDonutChartWithText = (dataArray, elementID) => {
                 .attr("dy", ".4em")
                 .attr("text-anchor", "middle")
                 .text(function(d){
-                    // return d.data.value+"%";
                     return d.data.value;
                 })
-                .style('fill','#fff')
+                .style('fill','#000')
                 .style('font-size','3vw');
 
         // let legendRectSize=20;
@@ -238,7 +239,7 @@ let showDonutChartWithText = (dataArray, elementID) => {
 /**
  * 
  */
-let showBarChart = (dataArray, elementID) => {
+let showBarChart = (dataArray, elementID, colorRange) => {
     const maxAmount = Math.max(parseInt(dataArray[0].value), parseInt(dataArray[1].value));
     const width = 500;
     const height = 400;
@@ -259,10 +260,23 @@ let showBarChart = (dataArray, elementID) => {
         .domain([0, maxAmount])
         .range([height - margin.bottom, margin.top])
 
+    // let path=svg.selectAll('path')
+    // .data(pie(dataArray))
+    // .enter()
+    // .append('path')
+    // .attr("d",arc)
+    // .attr("fill",function(d,i){
+    //     return color(d.data.value);
+    // });
+    // let color = d3.scaleOrdinal(colorRange);
+
+    let color = d3.scaleOrdinal(colorRange);
+    
     svg
         .append("g")
         .attr("fill", '#b54fc7')
         .selectAll("rect")
+        // .data(dataArray.sort((a, b, c, d) => d3.descending(a.value, b.value, c.value, d, value)))
         .data(dataArray.sort((a, b) => d3.descending(a.value, b.value)))
         .join("rect")
         .attr("x", (d, i) => x(i))
