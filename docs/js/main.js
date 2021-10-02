@@ -21,6 +21,8 @@ let init = (dataset) => {
     // color for pieChart and barChart
     let colorRange = ['#FFA500','#0000FF', '#3FF02B', '#FAF63F']; // orange, blue, green, yellow
 
+    showMainTable(dataset.slice(0, 5));
+
     for (let x in dataset) {
         oneDayOfData = dataset[x];
         sectionElement = document.createElement("section");
@@ -94,14 +96,12 @@ let init = (dataset) => {
         showBarChart(dataForBarChart, barChartID, colorRange);
         showDonutChartWithText(dataArrayforPieChart, pieChartID, colorRange);
     }
-
-    showMainTable();
 }
 
 /**
  * Show Main Table 
  */
-let showMainTable = () => {
+let showMainTable = (dataArray) => {
     let htmlString = '',
     total = 0;
     nivel = 0;
@@ -109,23 +109,23 @@ let showMainTable = () => {
     const totalEl = document.getElementById('total');
     const mainTable = document.getElementById('mainTable');
 
-    for (let x in dataset) {
+    for (let x in dataArray) {
         htmlString += '<div class="item">'
-        htmlString += dataset[x].date;
+        htmlString += dataArray[x].date;
         htmlString += '</div>';
         htmlString += '<div class="item">'
-        htmlString += dataset[x].prodW
+        htmlString += dataArray[x].prodW
         htmlString += '</div>';
         htmlString += '<div class="item">'
-        htmlString += dataset[x].prodX
+        htmlString += dataArray[x].prodX
         htmlString += '</div>';
         htmlString += '<div class="item">'
-        htmlString += dataset[x].prodY
+        htmlString += dataArray[x].prodY
         htmlString += '</div>';
         htmlString += '<div class="item">'
-        htmlString += dataset[x].prodZ
+        htmlString += dataArray[x].prodZ
         htmlString += '</div>';
-        total += parseInt(dataset[x].todos);
+        total += parseInt(dataArray[x].todos);
     }
     
     totalEl.innerHTML = total;
