@@ -46,14 +46,24 @@
                         $dateObject->prodZ  = substr($emailContent, 19, 3);
                         $dateObject->nivel  = substr($emailContent, 23, 1);
                         $dateObject->mayor  = substr($emailContent, 25, 2);
-                        $dateObject->peor   = substr($emailContent, 27, 2);
+                        $dateObject->peor   = substr($emailContent, 28, 2);
                         
                         array_push($jsonObject, $dateObject);
                     } // End foreach
-        
-                    $jsonContent = json_encode(array_reverse($jsonObject)).PHP_EOL;
+                    
+                    // Reverse the Array so last e-mail will be first
+                    $jsonObject = array_reverse($jsonObject);
+                    
+                    // PHP will only provide 10 elements to JSON
+                    if(count($jsonObject > 10)){
+                        $jsonObject = array_slice($jsonObject, 0, 10);
+                    }
+                    
+                    // convert the array into a JSON object
+                    $jsonContent = json_encode($jsonObject).PHP_EOL;
+                    
+                    // Deliver JSON file to javascript
                     echo $jsonContent;
-        
                 } // end if
             } // end else
                 
