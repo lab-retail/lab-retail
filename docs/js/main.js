@@ -1,4 +1,4 @@
-// console.log(dataset);
+// console.log("dataset lenght:" + dataset.length);
 
 /**
  * Main function to init all graphics and tables
@@ -248,10 +248,10 @@ let showDonutChartWithText = (dataArray, elementID, colorRange) => {
 }
 
 /**
- * 
+ * Show Bar Chart 
  */
 let showBarChart = (dataArray, elementID, colorRange) => {
-    const maxAmount = Math.max(parseInt(dataArray[0].value), parseInt(dataArray[1].value));
+    const maxAmount = Math.max(parseInt(dataArray[0].value), parseInt(dataArray[1].value), parseInt(dataArray[2].value), parseInt(dataArray[3].value));
     const width = 500;
     const height = 400;
     const margin = { top: 50, bottom: 50, left: 50, right: 50 };
@@ -276,7 +276,8 @@ let showBarChart = (dataArray, elementID, colorRange) => {
     svg
         .append("g")
         .selectAll("rect")
-        .data(dataArray.sort((a, b) => d3.descending(a.value, b.value)))
+        // .data(dataArray.sort((a, b) => d3.descending(a.value, b.value)))
+        .data(dataArray)
         .join("rect")
         .attr("x", (d, i) => x(i))
         .attr("y", d => y(d.value))
@@ -290,7 +291,7 @@ let showBarChart = (dataArray, elementID, colorRange) => {
 
     function yAxis(g) {
         g.attr("transform", `translate(${margin.left}, 0)`)
-        .call(d3.axisLeft(y).ticks(null, dataArray.format))
+        .call(d3.axisLeft(y).ticks(null, dataArray.value))
         .attr("font-size", '20px')
     }
 
