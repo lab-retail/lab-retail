@@ -30,24 +30,26 @@
                     
                     foreach ($emailData as $emailIdent) {
                         $overview = imap_fetch_overview($connection, $emailIdent, 0);
+                        $date = date('d F Y', strtotime($overview[0]->date));
                         $message = imap_fetchbody($connection, $emailIdent, '1');
                         $messageExcerpt = substr($message, 0, 150);
-                        $date = date('d F Y', strtotime($overview[0]->date));
                         $emailContent = substr(quoted_printable_decode($messageExcerpt), 0, 30); 
                         
-                        $dateObject = new stdClass();
-                        $dateObject->date   = $date;
-                        $dateObject->id     = substr($emailContent, 1, 1);
-                        $dateObject->todos  = substr($emailContent, 3, 3);
-                        $dateObject->prodW  = substr($emailContent, 7, 3);
-                        $dateObject->prodX  = substr($emailContent, 11, 3);
-                        $dateObject->prodY  = substr($emailContent, 15, 3);
-                        $dateObject->prodZ  = substr($emailContent, 19, 3);
-                        $dateObject->nivel  = substr($emailContent, 23, 1);
-                        $dateObject->mayor  = substr($emailContent, 25, 2);
-                        $dateObject->peor   = substr($emailContent, 28, 2);
+                        $emailObject = new stdClass();
+                        $emailObject->date   = $date;
+
+                        // echo "emailContent: <" . $emailContent . ">" .PHP_EOL;
+                        $emailObject->id     = substr($emailContent, 1, 1);
+                        $emailObject->todos  = substr($emailContent, 3, 3);
+                        $emailObject->prodW  = substr($emailContent, 7, 3);
+                        $emailObject->prodX  = substr($emailContent, 11, 3);
+                        $emailObject->prodY  = substr($emailContent, 15, 3);
+                        $emailObject->prodZ  = substr($emailContent, 19, 3);
+                        $emailObject->nivel  = substr($emailContent, 23, 1);
+                        $emailObject->mayor  = substr($emailContent, 25, 2);
+                        $emailObject->peor   = substr($emailContent, 28, 2);
                         
-                        array_push($jsonObject, $dateObject);
+                        array_push($jsonObject, $emailObject);
                     } // End foreach
                     
                     // Reverse the Array so last e-mail will be first
