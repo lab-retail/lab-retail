@@ -27,8 +27,7 @@
         
         
                 if (! empty($emailData)) {
-                    // $jsonContent .= '{ "dates":';
-
+                    
                     foreach ($emailData as $emailIdent) {
                         $overview = imap_fetch_overview($connection, $emailIdent, 0);
                         $message = imap_fetchbody($connection, $emailIdent, '1');
