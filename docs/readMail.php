@@ -51,7 +51,7 @@
                         array_push($jsonObject, $dateObject);
                     } // End foreach
         
-                    $jsonContent = json_encode($jsonObject).PHP_EOL;
+                    $jsonContent = json_encode(array_reverse($jsonObject)).PHP_EOL;
                     echo $jsonContent;
         
                 } // end if
